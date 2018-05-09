@@ -9,7 +9,8 @@ class Nonogram:
     row_rules = dict()
     grid = list()
 
-    def __init__(self, column_rules, row_rules):
+    def __init__(self, column_rules, row_rules, size=5):
+        self.size = size
         self.column_rules = column_rules
         self.row_rules = row_rules
         self.grid = [[False for _ in range(self.size)] for _ in range(self.size)]
@@ -115,7 +116,7 @@ class Solver:
             is_valid = solution.is_valid()
             print('valid:', is_valid)
             if is_valid:
-                return solution.grid
+                return solution
 
 
 class BFS(Solver):

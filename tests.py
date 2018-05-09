@@ -40,10 +40,32 @@ def test_solver():
     s = Solver(nonogram, nonogram.row_rules)
 
     solution = [
-         [False, False, True, True, True],
-         [False, False, False, True, True],
-         [False, False, False, False, True],
-         [True, True, True, False, False],
-         [True, True, True, False, True]
-     ]
-    assert s.solve() == solution
+        [False, False, True, True, True],
+        [False, False, False, True, True],
+        [False, False, False, False, True],
+        [True, True, True, False, False],
+        [True, True, True, False, True]
+    ]
+    assert s.solve().grid == solution
+
+
+def test_smiley():
+    row_rules = {0: [4],
+                 1: [6],
+                 2: [2, 2, 2],
+                 3: [8],
+                 4: [1, 4, 1],
+                 5: [2, 2],
+                 6: [6],
+                 7: [4],}
+    column_rules = {0: [4],
+                    1: [3,2],
+                    2: [2,2,2],
+                    3: [5,2],
+                    4: [5,2],
+                    5: [2,2,2],
+                    6: [3,2],
+                    7: [4],}
+    nonogram = Nonogram(column_rules, row_rules, 8)
+    s = Solver(nonogram, row_rules)
+    s.solve().print()
