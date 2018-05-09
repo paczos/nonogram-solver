@@ -18,7 +18,7 @@ class Nonogram:
     def print(self):
         print()
         for row in self.grid:
-            print(' | '.join(map(lambda x: 'X' if x else ' ', row)))
+            print(' | '.join(map(lambda x: '◼' if x else ' ', row)))
 
     def set_cell(self, x, y, value):
         try:
@@ -29,14 +29,16 @@ class Nonogram:
     def _set_grid(self, grid):
         self.grid = grid
 
+    @staticmethod
+    def check_sequence(seq, checker):
+        assert checker == list(map(len, filter(any, [list(g) for k, g in groupby(seq)])))
+
     def is_valid(self):
-        def check_sequence(seq, checker):
-            assert checker == list(map(len, filter(any, [list(g) for k, g in groupby(seq)])))
 
         try:
             for i in range(self.size):
-                check_sequence(self.get_column(i), self.column_rules[i])
-                check_sequence(self.get_row(i), self.row_rules[i])
+                self.check_sequence(self.get_column(i), self.column_rules[i])
+                self.check_sequence(self.get_row(i), self.row_rules[i])
         except AssertionError:
             return False
 
@@ -101,13 +103,7 @@ class Solver:
         self.nonogram.grid[idx] = entries
 
     def solve_row(self, idx):
-        for c in self.row_combinations(self.row_rules[idx]):
-            self.fill_row(idx, c)
-            if idx + 1 == self.nonogram.size:
-                yield self.nonogram
-            else:
-                deeper = self.solve_row(idx + 1)
-                yield from deeper
+        raise NotImplementedError('must be implemented by a subclass')
 
     def solve(self):
         for ct, solution in enumerate(self.solve_row(0)):
@@ -119,12 +115,41 @@ class Solver:
                 return solution
 
 
+class DFS(Solver):
+    def solve_row(self, idx):
+        for c in self.row_combinations(self.row_rules[idx]):
+            self.fill_row(idx, c)
+            if idx + 1 == self.nonogram.size:
+                yield self.nonogram
+            else:
+                deeper = self.solve_row(idx + 1)
+                yield from deeper
+
+
 class BFS(Solver):
-    pass
+    def solve_row(self, idx):
+        queue = []
+        for c in self.row_combinations(self.row_rules[idx]):
+            self.fill_row(idx, c)
+            if idx + 1 == self.nonogram.size:
+                return self.nonogram
+            else:
+                deeper = self.solve_row(idx + 1)
+                yield from deeper
+
 
 
 class AStar(Solver):
-    pass
+    def solve_row(self, idx):
+        for c in self.row_combinations(self.row_rules[idx]):
+            print(c)
+
+    def column_partially_valid(self, idx):
+        try:
+            self.nonogram.check_sequence(self.nonogram.get_column(idx), self.nonogram.column_rules[idx])
+        except AssertionError:
+            return False
+        return True
 
 
 def main():
