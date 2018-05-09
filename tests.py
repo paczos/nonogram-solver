@@ -1,7 +1,6 @@
 import pytest
 
-from main import Nonogram
-
+from main import Nonogram, Solver
 
 grid_expected = [
     ([
@@ -10,14 +9,14 @@ grid_expected = [
          [False, False, False, False, True],
          [True, True, True, False, False],
          [True, True, True, False, True]
-    ], True),
+     ], True),
     ([
-        [True, False, True, True, True],
-        [False, False, False, True, True],
-        [False, False, False, False, True],
-        [False, True, True, False, False],
-        [True, True, True, False, True]
-    ], False)
+         [True, False, True, True, True],
+         [False, False, False, True, True],
+         [False, False, False, False, True],
+         [False, True, True, False, False],
+         [True, True, True, False, True]
+     ], False)
 ]
 
 
@@ -34,3 +33,17 @@ def test_valid(grid, expected):
     nonogram._set_grid(grid)
 
     assert nonogram.is_valid() == expected
+
+
+def test_solver():
+    nonogram = get_nonogram()
+    s = Solver(nonogram, nonogram.row_rules)
+
+    solution = [
+         [False, False, True, True, True],
+         [False, False, False, True, True],
+         [False, False, False, False, True],
+         [True, True, True, False, False],
+         [True, True, True, False, True]
+     ]
+    assert s.solve() == solution
