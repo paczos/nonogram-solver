@@ -2,6 +2,7 @@ import sys
 from collections import deque
 from copy import deepcopy
 from itertools import groupby, combinations_with_replacement, repeat
+from queue import PriorityQueue
 
 
 class Nonogram:
@@ -46,11 +47,21 @@ class Nonogram:
 
         return True
 
+    def is_row_valid(self, ridx):
+        try:
+            self.check_sequence(self.get_row(ridx), self.row_rules[ridx])
+        except AssertionError:
+            return False
+        return True
+
     def get_row(self, index):
         return self.grid[index]
 
     def get_column(self, index):
         return [row[index] for row in self.grid]
+
+    def group_cells(self, sequence):
+        return list(map(len, filter(any, [list(g) for k, g in groupby(sequence)])))
 
 
 class Solver:
@@ -153,16 +164,43 @@ class BFS(Solver):
 
 
 class AStar(Solver):
-    def search_space_elems(self, idx):
-        for c in self.row_combinations(self.row_rules[idx]):
-            print(c)
+    def __init__(self, nonogram, row_rules):
+        super().__init__(nonogram, row_rules)
+        self.queue = PriorityQueue()
 
-    def column_partially_valid(self, idx):
-        try:
-            self.nonogram.check_sequence(self.nonogram.get_column(idx), self.nonogram.column_rules[idx])
-        except AssertionError:
-            return False
-        return True
+    def search_space_elems(self, idx=0, grid=None):
+        global c
+        queue = self.queue
+        if grid is None:  # generating first solution grid
+            grid = list()
+            for i in range(self.nonogram.size):
+                grid.append(next(self.row_combinations(self.row_rules[i])))
+
+        for i, c in enumerate(self.row_combinations(self.row_rules[idx])):
+            grid[idx] = c
+            weight = self.count_valid_groups(grid)
+            copy = deepcopy(grid)
+            assert len(copy) == self.nonogram.size
+            queue.put((weight, (idx, copy)))
+
+        while queue:
+            (_, (lrow, lel)) = queue.get()
+            self.nonogram.grid = lel
+            yield self.nonogram
+            if lrow + 1 < self.nonogram.size:
+                yield from self.search_space_elems(lrow + 1, lel)
+
+    def count_valid_groups(self, grid):  # heuristic function
+        self.nonogram.grid = grid
+        max_fit_count = sum(map(sum, grid))
+        count_fit = 0
+        for cdx in range(self.nonogram.size):
+            column = self.nonogram.get_column(cdx)
+            column_groups = self.nonogram.group_cells(column)
+            column_rules = self.nonogram.column_rules[cdx]
+            fitting = list(map(lambda x: x[0] == x[1], zip(column_rules, column_groups))).count(True)
+            count_fit += fitting
+        return max_fit_count / count_fit
 
 
 def main():

@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 
 from main import Nonogram, DFS, AStar, BFS
@@ -71,36 +73,6 @@ def test_smiley_DFS():
     s.solve().print()
 
 
-def test_dog():
-    row_rules = {0: [2, 1],
-                 1: [6],
-                 2: [1, 1, 1],
-                 3: [5],
-                 4: [1, 1, 1],
-                 5: [8],
-                 6: [6],
-                 7: [2, 2],
-                 8: [1, 1],
-                 9: [9],
-                 }
-
-    column_rules = {0: [1],
-                    1: [4, 1],
-                    2: [1, 3, 1],
-                    3: [3, 2, 1],
-                    4: [1, 7],
-                    5: [3, 3, 1],
-                    6: [2, 2, 1],
-                    7: [3, 1],
-                    8: [5],
-                    9: [2, 1],
-                    }
-
-    nonogram = Nonogram(column_rules, row_rules, 10)
-    s = AStar(nonogram, row_rules)  # other algorithms are too slow for this
-    s.solve().print()
-
-
 def test_paper():
     row_rules = {0: [2],
                  1: [1, 1],
@@ -137,6 +109,190 @@ def test_smiley_BFS():
     s.solve().print()
 
 
+def test_smiley_AStar():
+    row_rules = {0: [4],
+                 1: [6],
+                 2: [2, 2, 2],
+                 3: [8],
+                 4: [1, 4, 1],
+                 5: [2, 2],
+                 6: [6],
+                 7: [4], }
+    column_rules = {0: [4],
+                    1: [3, 2],
+                    2: [2, 2, 2],
+                    3: [5, 2],
+                    4: [5, 2],
+                    5: [2, 2, 2],
+                    6: [3, 2],
+                    7: [4], }
+    nonogram = Nonogram(column_rules, row_rules, 8)
+    s = AStar(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_8x8_compare_AStar():
+    row_rules = {0: [3, 2],
+                 1: [4, 2],
+                 2: [1, 1, 2],
+                 3: [1, 2, 1],
+                 4: [1, 3, 2],
+                 5: [3, 2],
+                 6: [7],
+                 7: [2, 4], }
+    column_rules = {0: [1, 2, 1],
+                    1: [2, 2],
+                    2: [7],
+                    3: [1, 4],
+                    4: [2, 4],
+                    5: [1, 2],
+                    6: [3, 4],
+                    7: [7], }
+    nonogram = Nonogram(column_rules, row_rules, 8)
+    s = AStar(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_8x8_compare_BFS():
+    row_rules = {0: [3, 2],
+                 1: [4, 2],
+                 2: [1, 1, 2],
+                 3: [1, 2, 1],
+                 4: [1, 3, 2],
+                 5: [3, 2],
+                 6: [7],
+                 7: [2, 4], }
+    column_rules = {0: [1, 2, 1],
+                    1: [2, 2],
+                    2: [7],
+                    3: [1, 4],
+                    4: [2, 4],
+                    5: [1, 2],
+                    6: [3, 4],
+                    7: [7], }
+    nonogram = Nonogram(column_rules, row_rules, 8)
+    s = BFS(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_8x8_compare_DFS():
+    row_rules = {0: [3, 2],
+                 1: [4, 2],
+                 2: [1, 1, 2],
+                 3: [1, 2, 1],
+                 4: [1, 3, 2],
+                 5: [3, 2],
+                 6: [7],
+                 7: [2, 4], }
+    column_rules = {0: [1, 2, 1],
+                    1: [2, 2],
+                    2: [7],
+                    3: [1, 4],
+                    4: [2, 4],
+                    5: [1, 2],
+                    6: [3, 4],
+                    7: [7], }
+    nonogram = Nonogram(column_rules, row_rules, 8)
+    s = DFS(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_9x9_AStar():
+    sys.setrecursionlimit(30000)
+    row_rules = {0: [3, 1],
+                 1: [3, 2],
+                 2: [3, 3],
+                 3: [0],
+                 4: [1],
+                 5: [3, 1],
+                 6: [5, 3],
+                 7: [3, 1],
+                 8: [1], }
+    column_rules = {0: [1],
+                    1: [3, 3],
+                    2: [3, 5],
+                    3: [3, 3],
+                    4: [1],
+                    5: [0],
+                    6: [3, 1],
+                    7: [2, 3],
+                    8: [1, 1], }
+    nonogram = Nonogram(column_rules, row_rules, 9)
+    s = AStar(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_dog_AStar():
+    sys.setrecursionlimit(30000)
+    row_rules = {0: [2, 1],
+                 1: [6],
+                 2: [1, 1, 1],
+                 3: [5],
+                 4: [1, 1, 1],
+                 5: [8],
+                 6: [6],
+                 7: [2, 2],
+                 8: [1, 1],
+                 9: [9],
+                 }
+
+    column_rules = {0: [1],
+                    1: [4, 1],
+                    2: [1, 3, 1],
+                    3: [3, 2, 1],
+                    4: [1, 7],
+                    5: [3, 3, 1],
+                    6: [2, 2, 1],
+                    7: [3, 1],
+                    8: [5],
+                    9: [2, 1],
+                    }
+
+    bobo = Nonogram(column_rules, row_rules, 10)
+    s = AStar(bobo, row_rules)  # other algorithms are too slow for this
+    s.solve().print()
+
+
+def test_duck_AStar():
+    row_rules = {0: [3],
+                 1: [5],
+                 2: [4, 3],
+                 3: [7],
+                 4: [5],
+                 5: [3],
+                 6: [5],
+                 7: [1, 8],
+                 8: [3, 3, 3],
+                 9: [7, 3, 2],
+                 10: [5, 4, 2],
+                 11: [8, 2],
+                 12: [10],
+                 13: [2, 3],
+                 14: [6],
+                 }
+
+    column_rules = {
+        0: [3],
+        1: [4],
+        2: [5],
+        3: [4],
+        4: [5],
+        5: [6],
+        6: [3, 2, 1],
+        7: [2, 2, 5],
+        8: [4, 2, 6],
+        9: [8, 2, 3],
+        10: [8, 2, 1, 1],
+        11: [2, 6, 2, 1, ],
+        12: [4, 6],
+        13: [2, 4],
+        14: [1],
+    }
+    nonogram = Nonogram(column_rules, row_rules, 15)
+    s = AStar(nonogram, row_rules)  # other
+    s.solve().print()
+
+
 def test_own():
     row_rules = {0: [2],
                  1: [2],
@@ -147,5 +303,5 @@ def test_own():
                     2: [4],
                     3: [4], }
     nonogram = Nonogram(column_rules, row_rules, 4)
-    s = AStar(nonogram, row_rules)
+    s = DFS(nonogram, row_rules)
     s.solve().print()
