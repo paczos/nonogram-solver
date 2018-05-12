@@ -1,4 +1,6 @@
 import sys
+from collections import deque
+from copy import deepcopy
 from itertools import groupby, combinations_with_replacement, repeat
 
 
@@ -102,11 +104,11 @@ class Solver:
     def fill_row(self, idx, entries):
         self.nonogram.grid[idx] = entries
 
-    def solve_row(self, idx):
+    def search_space_elems(self, idx):
         raise NotImplementedError('must be implemented by a subclass')
 
     def solve(self):
-        for ct, solution in enumerate(self.solve_row(0)):
+        for ct, solution in enumerate(self.search_space_elems(0)):
             print('suggested solution', ct)
             solution.print()
             is_valid = solution.is_valid()
@@ -116,31 +118,42 @@ class Solver:
 
 
 class DFS(Solver):
-    def solve_row(self, idx):
+    def search_space_elems(self, idx):
         for c in self.row_combinations(self.row_rules[idx]):
             self.fill_row(idx, c)
             if idx + 1 == self.nonogram.size:
                 yield self.nonogram
             else:
-                deeper = self.solve_row(idx + 1)
+                deeper = self.search_space_elems(idx + 1)
                 yield from deeper
 
 
 class BFS(Solver):
-    def solve_row(self, idx):
-        queue = []
-        for c in self.row_combinations(self.row_rules[idx]):
-            self.fill_row(idx, c)
-            if idx + 1 == self.nonogram.size:
-                return self.nonogram
-            else:
-                deeper = self.solve_row(idx + 1)
-                yield from deeper
+    queue = deque()
 
+    def search_space_elems(self, idx=0, grid=None):
+        global c
+        queue = self.queue
+        if grid is None:  # generating first solution grid
+            grid = list()
+            for i in range(self.nonogram.size):
+                grid.append(next(self.row_combinations(self.row_rules[i])))
+
+        for i, c in enumerate(self.row_combinations(self.row_rules[idx])):
+            grid[idx] = c
+            queue.append((idx + 1, deepcopy(grid)))
+
+        while queue:
+            (lrow, lel) = queue.popleft()
+            self.nonogram.grid = lel
+            print('q size', len(queue))
+            yield self.nonogram
+            if lrow != self.nonogram.size:
+                yield from self.search_space_elems(lrow, lel)
 
 
 class AStar(Solver):
-    def solve_row(self, idx):
+    def search_space_elems(self, idx):
         for c in self.row_combinations(self.row_rules[idx]):
             print(c)
 

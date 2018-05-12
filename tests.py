@@ -1,6 +1,6 @@
 import pytest
 
-from main import Nonogram, DFS, AStar
+from main import Nonogram, DFS, AStar, BFS
 
 grid_expected = [
     ([
@@ -49,7 +49,7 @@ def test_solver():
     assert s.solve().grid == solution
 
 
-def test_smiley():
+def test_smiley_DFS():
     row_rules = {0: [4],
                  1: [6],
                  2: [2, 2, 2],
@@ -97,8 +97,8 @@ def test_dog():
                     }
 
     nonogram = Nonogram(column_rules, row_rules, 10)
-    # s = DFS(nonogram, row_rules)
-    # s.solve().print()
+    s = AStar(nonogram, row_rules)  # other algorithms are too slow for this
+    s.solve().print()
 
 
 def test_paper():
@@ -112,6 +112,28 @@ def test_paper():
                     3: [2], }
     nonogram = Nonogram(column_rules, row_rules, 4)
     s = DFS(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_smiley_BFS():
+    row_rules = {0: [4],
+                 1: [6],
+                 2: [2, 2, 2],
+                 3: [8],
+                 4: [1, 4, 1],
+                 5: [2, 2],
+                 6: [6],
+                 7: [4], }
+    column_rules = {0: [4],
+                    1: [3, 2],
+                    2: [2, 2, 2],
+                    3: [5, 2],
+                    4: [5, 2],
+                    5: [2, 2, 2],
+                    6: [3, 2],
+                    7: [4], }
+    nonogram = Nonogram(column_rules, row_rules, 8)
+    s = BFS(nonogram, row_rules)
     s.solve().print()
 
 
