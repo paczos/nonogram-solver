@@ -1,3 +1,7 @@
+"""
+Paweł Paczuski, Dmytro Ievseienko, EARIN 18L P2.2
+"""
+
 import sys
 from collections import deque
 from copy import deepcopy
@@ -6,8 +10,7 @@ from queue import PriorityQueue
 
 
 class Nonogram:
-    # zero-indexed
-    size = 5
+    size = None
     column_rules = dict()
     row_rules = dict()
     grid = list()
@@ -23,45 +26,60 @@ class Nonogram:
         for row in self.grid:
             print(' | '.join(map(lambda x: '◼' if x else ' ', row)))
 
+    # setters
     def set_cell(self, x, y, value):
         try:
             self.grid[x][y] = value
         except IndexError:
-            print('Out of range.')
+            print('Unable to set value for a cell: one of indexes is ut of range.')
+
+    def set_row(self, idx, row):
+        self.grid[idx] = row
 
     def _set_grid(self, grid):
+        """Set the whole grid - used in tests."""
         self.grid = grid
 
-    @staticmethod
-    def check_sequence(seq, checker):
-        assert checker == list(map(len, filter(any, [list(g) for k, g in groupby(seq)])))
-
-    def is_valid(self):
-
-        try:
-            for i in range(self.size):
-                self.check_sequence(self.get_column(i), self.column_rules[i])
-                self.check_sequence(self.get_row(i), self.row_rules[i])
-        except AssertionError:
-            return False
-
-        return True
-
-    def is_row_valid(self, ridx):
-        try:
-            self.check_sequence(self.get_row(ridx), self.row_rules[ridx])
-        except AssertionError:
-            return False
-        return True
-
+    # getters
     def get_row(self, index):
         return self.grid[index]
 
     def get_column(self, index):
         return [row[index] for row in self.grid]
 
-    def group_cells(self, sequence):
+    # validation
+    def check_sequence(self, seq, checker):
+        assert checker == self.group_cells(seq)
+
+    @staticmethod
+    def group_cells(sequence):
         return list(map(len, filter(any, [list(g) for k, g in groupby(sequence)])))
+
+    def is_valid(self):
+        try:
+            for i in range(self.size):
+                self._is_line_valid('row', i)
+                self._is_line_valid('column', i)
+        except AssertionError:
+            return False
+
+        return True
+
+    def _is_line_valid(self, line_type, line_index, shout=True):
+        """Check whether line (row or column) is valid."""
+        assert line_type == 'row' or line_type == 'column'
+
+        try:
+            self.check_sequence(
+                getattr(self, 'get_{}'.format(line_type))(line_index),
+                getattr(self, '{}_rules'.format(line_type))[line_index]
+            )
+        except AssertionError:
+            if shout:
+                raise
+            return False
+
+        return True
 
 
 class Solver:
@@ -112,9 +130,6 @@ class Solver:
 
             yield grid_compatible
 
-    def fill_row(self, idx, entries):
-        self.nonogram.grid[idx] = entries
-
     def search_space_elems(self, idx):
         raise NotImplementedError('must be implemented by a subclass')
 
@@ -131,7 +146,7 @@ class Solver:
 class DFS(Solver):
     def search_space_elems(self, idx):
         for c in self.row_combinations(self.row_rules[idx]):
-            self.fill_row(idx, c)
+            self.nonogram.set_row(idx, c)
             if idx + 1 == self.nonogram.size:
                 yield self.nonogram
             else:
