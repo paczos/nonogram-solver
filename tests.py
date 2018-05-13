@@ -65,7 +65,109 @@ def test_paper():
     s.solve().print()
 
 
-def test_smiley_DFS():
+def test_5x5_w_DFS():
+    row_rules = {0: [4],
+                 1: [2, 2],
+                 2: [1],
+                 3: [2],
+                 4: [2], }
+    column_rules = {0: [2],
+                    1: [2],
+                    2: [1],
+                    3: [2, 2],
+                    4: [4],
+                    }
+    nonogram = Nonogram(column_rules, row_rules, 5)
+    s = DFS(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_5x5_w_BFS():
+    row_rules = {0: [4],
+                 1: [2, 2],
+                 2: [1],
+                 3: [2],
+                 4: [2], }
+    column_rules = {0: [2],
+                    1: [2],
+                    2: [1],
+                    3: [2, 2],
+                    4: [4],
+                    }
+    nonogram = Nonogram(column_rules, row_rules, 5)
+    s = BFS(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_5x5_w_AStar():
+    row_rules = {0: [4],
+                 1: [2, 2],
+                 2: [1],
+                 3: [2],
+                 4: [2], }
+    column_rules = {0: [2],
+                    1: [2],
+                    2: [1],
+                    3: [2, 2],
+                    4: [4],
+                    }
+    nonogram = Nonogram(column_rules, row_rules, 5)
+    s = AStar(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_5x5_tetri_DFS():
+    row_rules = {0: [3],
+                 1: [2],
+                 2: [1],
+                 3: [1, 2],
+                 4: [4], }
+    column_rules = {0: [3],
+                    1: [2, 2],
+                    2: [1, 1],
+                    3: [2],
+                    4: [2],
+                    }
+    nonogram = Nonogram(column_rules, row_rules, 5)
+    s = DFS(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_5x5_tetri_BFS():
+    row_rules = {0: [3],
+                 1: [2],
+                 2: [1],
+                 3: [1, 2],
+                 4: [4], }
+    column_rules = {0: [3],
+                    1: [2, 2],
+                    2: [1, 1],
+                    3: [2],
+                    4: [2],
+                    }
+    nonogram = Nonogram(column_rules, row_rules, 5)
+    s = BFS(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_5x5_tetri_AStar():
+    row_rules = {0: [3],
+                 1: [2],
+                 2: [1],
+                 3: [1, 2],
+                 4: [4], }
+    column_rules = {0: [3],
+                    1: [2, 2],
+                    2: [1, 1],
+                    3: [2],
+                    4: [2],
+                    }
+    nonogram = Nonogram(column_rules, row_rules, 5)
+    s = AStar(nonogram, row_rules)
+    s.solve().print()
+
+
+def test_8x8_smiley_DFS():
     row_rules = {0: [4],
                  1: [6],
                  2: [2, 2, 2],
@@ -87,7 +189,7 @@ def test_smiley_DFS():
     s.solve().print()
 
 
-def test_smiley_BFS():
+def test_8x8_smiley_BFS():
     row_rules = {0: [4],
                  1: [6],
                  2: [2, 2, 2],
@@ -109,7 +211,7 @@ def test_smiley_BFS():
     s.solve().print()
 
 
-def test_smiley_AStar():
+def test_8x8_smiley_AStar():
     row_rules = {0: [4],
                  1: [6],
                  2: [2, 2, 2],
