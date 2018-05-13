@@ -51,6 +51,20 @@ def test_solver():
     assert s.solve().grid == solution
 
 
+def test_paper():
+    row_rules = {0: [2],
+                 1: [1, 1],
+                 2: [4],
+                 3: [4], }
+    column_rules = {0: [3],
+                    1: [1, 2],
+                    2: [4],
+                    3: [2], }
+    nonogram = Nonogram(column_rules, row_rules, 4)
+    s = DFS(nonogram, row_rules)
+    s.solve().print()
+
+
 def test_smiley_DFS():
     row_rules = {0: [4],
                  1: [6],
@@ -69,20 +83,6 @@ def test_smiley_DFS():
                     6: [3, 2],
                     7: [4], }
     nonogram = Nonogram(column_rules, row_rules, 8)
-    s = DFS(nonogram, row_rules)
-    s.solve().print()
-
-
-def test_paper():
-    row_rules = {0: [2],
-                 1: [1, 1],
-                 2: [4],
-                 3: [4], }
-    column_rules = {0: [3],
-                    1: [1, 2],
-                    2: [4],
-                    3: [2], }
-    nonogram = Nonogram(column_rules, row_rules, 4)
     s = DFS(nonogram, row_rules)
     s.solve().print()
 
