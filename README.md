@@ -6,7 +6,7 @@
 * there is a grid where each cell can be filled with "X" or "◼"
 * each cell and each row has a set of rules
 * rules are defined as a numbers of continuous ◼'es in a group:
-    * example: rule 2, 1 defines two ◼ followed by a _space_ and another ◼, where _space_ can be of any number of X'es
+    * example: rule 2, 1 defines two ◼ followed by a _space_ and another ◼, where _space_ can be of any number of X'es but not less than one.
 * there should be one solution to the Nongram
 
 ## Puzzle space and Search space
