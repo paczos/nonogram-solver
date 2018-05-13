@@ -30,6 +30,7 @@
 ### class Nonogram
 
 This class is responsible for:
+
 * Storing the grid
 * Basic operations on the grid
 * Validation - both full and partial
