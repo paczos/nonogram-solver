@@ -155,7 +155,9 @@ class DFS(Solver):
 
 
 class BFS(Solver):
-    queue = deque()
+    def __init__(self, nonogram, row_rules):
+        super().__init__(nonogram, row_rules)
+        self.queue = deque()
 
     def search_space_elems(self, idx=0, grid=None):
         global c
