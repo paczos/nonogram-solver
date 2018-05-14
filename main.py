@@ -195,7 +195,7 @@ class AStar(Solver):
 
         for i, c in enumerate(self.row_combinations(self.row_rules[idx])):
             grid[idx] = c
-            weight = self.count_valid_groups(grid)
+            weight = (self.count_invalid_groups(grid))
             copy = deepcopy(grid)
             assert len(copy) == self.nonogram.size
             queue.put((weight, (idx, copy)))
@@ -207,17 +207,16 @@ class AStar(Solver):
             if lrow + 1 < self.nonogram.size:
                 yield from self.search_space_elems(lrow + 1, lel)
 
-    def count_valid_groups(self, grid):  # heuristic function
+    def count_invalid_groups(self, grid):  # heuristic function
         self.nonogram.grid = grid
-        max_fit_count = sum(map(sum, grid))
-        count_fit = 0
+        not_fit_count = 0
         for cdx in range(self.nonogram.size):
             column = self.nonogram.get_column(cdx)
             column_groups = self.nonogram.group_cells(column)
             column_rules = self.nonogram.column_rules[cdx]
-            fitting = list(map(lambda x: x[0] == x[1], zip(column_rules, column_groups))).count(True)
-            count_fit += fitting
-        return max_fit_count / count_fit
+            fitting = list(map(lambda x: x[0] == x[1], zip(column_rules, column_groups))).count(False)
+            not_fit_count += fitting
+        return not_fit_count
 
 
 def main():
