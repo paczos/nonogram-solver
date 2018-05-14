@@ -11,7 +11,7 @@
 
 ## Puzzle space and Search space
 
-A maximally large puzzle space would contain all possible fillings of the NxN grid. It would, however be a waste of resources to analyze all, even the worst solutions. In order to make the space smaller, it is set up with respect to row rules. Elements of the search space are all solutions to the nonogram that have all rows filled with groups of ◼ generated according to row rules. Each element is correct with respect to the row rules, but not always according to the column rules. It is the goal of the algorithm to find among all elements of the search space ones that are also correct with respect to the column rules. 
+A maximally large puzzle space would contain all possible fillings of the NxN grid. It would, however, be a waste of resources to analyze all, even solutions with no relation to the row and column rules. In order to make the space smaller, it is set up with respect to row rules. Elements of the search space are all solutions to the nonogram that have all rows filled with groups of ◼ generated according to row rules. Each element is correct with respect to the row rules, but not always according to the column rules. It is the goal of the algorithm to find among all elements of the search space ones that are also correct with respect to the column rules. 
 
 Initially, a nonogram is filled with first suggestions for all rows. 
 
@@ -32,8 +32,8 @@ The simplest possible heuristic function would count number of columns that are 
 More advanced heuristic function simply counts total number of invalid groups that are placed incorrectly according to the column rules. This way solutions that require only small changes are placed first in the queue.  
 
 #### Properties
-* The heuristic function is **monotonous** as when one gets closer to the solution it becomes smaller. A better suggested solution has smaller number of invalid groups than a worse solution.
-* The heuristic function is **admissible** as the returned number of invalid groups is always smaller or equal (when the incorrect group is of length 1) to the number of steps required to find the correct solution.
+* The heuristic function is **monotonous** because as one gets closer to the solution it returns smaller values. A better suggested solution has smaller number of invalid groups than a worse solution.
+* The heuristic function is **admissible** because the returned number of invalid groups is always smaller or equal (when the only incorrect group is of length 1) to the number of steps required to find the correct solution.
 
 
 ## Performance of algorithms !TODO DESCRIBE, fill with times and iteration numbers @Dima
